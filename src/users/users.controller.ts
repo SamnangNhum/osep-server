@@ -53,7 +53,7 @@ export class UsersController {
         password,
       );
       response.status(200).send(token);
-    } catch(e) {
+    } catch (e) {
       response.status(400).send(e + '');
     }
   }

@@ -66,7 +66,7 @@ export class UsersService {
       } else {
         throw new Error('user not found');
       }
-    } catch (e) {
+    } catch(e) {
       throw e;
     }
 
