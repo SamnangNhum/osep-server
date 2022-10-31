@@ -29,14 +29,17 @@ export class UsersService {
       throw err;
     }
   }
-
+  // Register Function
   async insertIntoDB(registerDto): Promise<void> {
-    this.username = registerDto.username
-    this.password = registerDto.password
+    this.username = registerDto.username;
+    this.password = registerDto.password;
     try {
       await this.hashedPasswords();
     } catch {
-      throw new Error('Error Hashing Password');
+      throw {
+        error: true,
+        message: 'Error Hashing Password',
+      };
     }
 
     const userData = {
@@ -48,9 +51,13 @@ export class UsersService {
     try {
       await lastValueFrom(this.httpService.post('/user/register', userData));
     } catch (e) {
-      throw e;
+      throw {
+        success: false,
+        message: 'User Duplicated',
+      };
     }
   }
+  ////////////////////////////////////////////////////////////////
 
   async LoginValidated(getAllUsers): Promise<{}> {
     let matchUsername = '';
@@ -65,7 +72,10 @@ export class UsersService {
       if (findUsername.length != 0) {
         matchUsername = findUsername[0]['email'];
       } else {
-        throw 'User not found!';
+        throw {
+          error: false,
+          message: 'User does not exist',
+        };
       }
     } catch (e) {
       throw e;
@@ -75,7 +85,10 @@ export class UsersService {
       if (await compare(this.password, findUsername[0]['password'])) {
         matchPassword = findUsername[0]['password'];
       } else {
-        throw 'Password are not valid';
+        throw {
+          success: false,
+          message: 'Password does not match',
+        };
       }
     } catch (e) {
       throw e;
@@ -99,7 +112,7 @@ export class UsersService {
       await this.getUsers();
       getAllUsers = await this.getUsers();
     } catch (e) {
-      throw new Error(e);
+      throw e;
     }
 
     let user = {};

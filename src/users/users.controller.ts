@@ -14,7 +14,7 @@ export class UsersController {
     private jwtService: JwtService,
   ) {}
 
-  
+
   @ApiExcludeEndpoint()
   @Get('verify')
   async verifyFunction(@Res() response: Response) {
@@ -32,7 +32,7 @@ export class UsersController {
   }
 
   @Post('register')
-  @ApiResponse({ status: 200, description: 'User registered successfully' })
+  @ApiResponse({ status: 201, description: 'User registered successfully' })
   @ApiResponse({ status: 400, description: 'User Duplicated' })
   async createUser(
     @Res() response: Response,
@@ -40,9 +40,9 @@ export class UsersController {
   ): Promise<void> {
     try {
       await this.usersService.insertIntoDB(registerDto);
-      response.status(200).send('User registered successfully');
+      response.status(201).end();
     } catch (e) {
-      response.status(400).send('User Duplicated');
+      response.status(400).send(e);
     }
   }
 
@@ -57,7 +57,6 @@ export class UsersController {
       const token = await this.usersService.getGenerateToken(loginDto);
       response.status(200).send(token);
     } catch (e) {
-      console.log(e);
       response.status(400).send(e);
     }
   }
@@ -67,7 +66,7 @@ export class UsersController {
   @ApiResponse({ status: 500, description: 'Internal Server Error' })
   getUsers() {
     try {
-      response.status(200).send(this.usersService.getUsers());
+      return this.usersService.getUsers()
     } catch {
       response.status(500).end();
     }
