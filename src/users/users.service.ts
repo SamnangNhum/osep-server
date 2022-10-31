@@ -37,7 +37,7 @@ export class UsersService {
       await this.hashedPasswords();
     } catch {
       throw {
-        error: true,
+        success: false,
         message: 'Error Hashing Password',
       };
     }
@@ -73,7 +73,7 @@ export class UsersService {
         matchUsername = findUsername[0]['email'];
       } else {
         throw {
-          error: false,
+          success: false,
           message: 'User does not exist',
         };
       }
