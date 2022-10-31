@@ -37,7 +37,6 @@ export class UsersService {
       await this.hashedPasswords();
     } catch {
       throw {
-        success: false,
         message: 'Error Hashing Password',
       };
     }
@@ -52,7 +51,6 @@ export class UsersService {
       await lastValueFrom(this.httpService.post('/user/register', userData));
     } catch (e) {
       throw {
-        success: false,
         message: 'User Duplicated',
       };
     }
@@ -73,7 +71,6 @@ export class UsersService {
         matchUsername = findUsername[0]['email'];
       } else {
         throw {
-          success: false,
           message: 'User does not exist',
         };
       }
@@ -86,8 +83,7 @@ export class UsersService {
         matchPassword = findUsername[0]['password'];
       } else {
         throw {
-          success: false,
-          message: 'Password does not match',
+          message: 'Username and password is incorrect',
         };
       }
     } catch (e) {
