@@ -100,7 +100,7 @@ export class UsersService {
     };
   }
 
-  async getGenerateToken(loginDto): Promise<{ access_token: string }> {
+  async getGenerateToken(loginDto): Promise<{ success:boolean , access_token: string }> {
     this.username = loginDto.username;
     this.password = loginDto.password;
 
@@ -130,6 +130,7 @@ export class UsersService {
     }
 
     return {
+      success:true,
       access_token: signToken,
     };
   }
