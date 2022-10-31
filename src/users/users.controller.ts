@@ -54,7 +54,8 @@ export class UsersController {
       );
       response.status(200).send(token);
     } catch (e) {
-      response.status(400).send(e + '');
+      console.log(e)
+      response.status(400).send(e);
     }
   }
 

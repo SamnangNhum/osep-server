@@ -56,6 +56,7 @@ export class UsersService {
     let matchUsername = '';
     let matchPassword = '';
     let user = [];
+
     const findUsername: object[] = getAllUsers.filter(
       (value: any) => value['email'] === this.username,
     );
@@ -64,7 +65,7 @@ export class UsersService {
       if (findUsername.length != 0) {
         matchUsername = findUsername[0]['email'];
       } else {
-        throw new Error('user not found');
+        throw 'User not found!';
       }
     } catch(e) {
       throw e;
@@ -74,7 +75,7 @@ export class UsersService {
       if (await compare(this.password, findUsername[0]['password'])) {
         matchPassword = findUsername[0]['password'];
       } else {
-        throw new Error('Password are not valid');
+        throw 'Password are not valid';
       }
     } catch (e) {
       throw e;
