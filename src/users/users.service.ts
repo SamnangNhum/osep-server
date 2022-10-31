@@ -30,9 +30,9 @@ export class UsersService {
     }
   }
 
-  async insertIntoDB(username: string, password: string): Promise<void> {
-    this.username = username;
-    this.password = password;
+  async insertIntoDB(registerDto): Promise<void> {
+    this.username = registerDto.username
+    this.password = registerDto.password
     try {
       await this.hashedPasswords();
     } catch {
@@ -67,7 +67,7 @@ export class UsersService {
       } else {
         throw 'User not found!';
       }
-    } catch(e) {
+    } catch (e) {
       throw e;
     }
 
@@ -87,12 +87,9 @@ export class UsersService {
     };
   }
 
-  async getGenerateToken(
-    username: string,
-    password: string,
-  ): Promise<{ access_token: string }> {
-    this.username = username;
-    this.password = password;
+  async getGenerateToken(loginDto): Promise<{ access_token: string }> {
+    this.username = loginDto.username;
+    this.password = loginDto.password;
 
     let signToken: string = '';
 

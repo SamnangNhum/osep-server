@@ -1,9 +1,12 @@
 import { Body, Controller, Get, Post, Res } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { Response } from 'express';
-
+import { loginDto } from 'src/dto/login.dto';
+import { response, Response } from 'express';
 import { UsersService } from './users.service';
+import { ApiExcludeEndpoint, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { registerDto } from 'src/dto/register.dto';
 
+@ApiTags('User Endpoint')
 @Controller('user')
 export class UsersController {
   constructor(
@@ -11,6 +14,8 @@ export class UsersController {
     private jwtService: JwtService,
   ) {}
 
+  
+  @ApiExcludeEndpoint()
   @Get('verify')
   async verifyFunction(@Res() response: Response) {
     const txt =
@@ -27,40 +32,44 @@ export class UsersController {
   }
 
   @Post('register')
+  @ApiResponse({ status: 200, description: 'User registered successfully' })
+  @ApiResponse({ status: 400, description: 'User Duplicated' })
   async createUser(
     @Res() response: Response,
-    @Body('username') username: string,
-    @Body('password') password: string,
+    @Body() registerDto: registerDto,
   ): Promise<void> {
     try {
-      await this.usersService.insertIntoDB(username, password);
-
-      response.status(200).send('USER REGISTERED');
+      await this.usersService.insertIntoDB(registerDto);
+      response.status(200).send('User registered successfully');
     } catch (e) {
-      response.status(400).send('USER DUPLICATED');
+      response.status(400).send('User Duplicated');
     }
   }
 
   @Post('login')
+  @ApiResponse({ status: 200, description: 'Response Access Token' })
+  @ApiResponse({ status: 400, description: 'Bad Request' })
   async loginUser(
     @Res() response: Response,
-    @Body('username') username: string,
-    @Body('password') password: string,
+    @Body() loginDto: loginDto,
   ): Promise<void> {
     try {
-      const token = await this.usersService.getGenerateToken(
-        username,
-        password,
-      );
+      const token = await this.usersService.getGenerateToken(loginDto);
       response.status(200).send(token);
     } catch (e) {
-      console.log(e)
+      console.log(e);
       response.status(400).send(e);
     }
   }
 
   @Get()
+  @ApiResponse({ status: 200, description: 'List of users' })
+  @ApiResponse({ status: 500, description: 'Internal Server Error' })
   getUsers() {
-    return this.usersService.getUsers();
+    try {
+      response.status(200).send(this.usersService.getUsers());
+    } catch {
+      response.status(500).end();
+    }
   }
 }
